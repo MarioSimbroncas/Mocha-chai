@@ -1,5 +1,6 @@
 const User = require("../model/User");
 
+// Creating a function to create a user
 exports.createUser = async (req, res) => {
   try {
     // Get the data from the request body
@@ -56,10 +57,36 @@ exports.createUser = async (req, res) => {
   }
 };
 
+// Creating a function to get all users
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.find().sort({ create_time: "descending" });
     res.status(200).json({ message: "Users fetched successfully", users });
+  } catch (err) {
+    res
+      .status(400)
+      .json({ message: err.message, error: "Something went wrong" });
+  }
+};
+
+// Creating a function to get a single user
+exports.getSingleUser = async (req, res) => {
+  try {
+    // Get the user ID from the request parameters
+    const { userid } = req.params;
+    // Validate the user ID
+    if (!userid) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+    const userQuery = { _id: userid };
+    // Find the user by ID
+    const user = await User.findOne(userQuery);
+    // If the user is not found, send an error response
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Send the response
+    res.status(200).json({ message: "User fetched successfully", user });
   } catch (err) {
     res
       .status(400)
