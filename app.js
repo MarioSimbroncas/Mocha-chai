@@ -12,13 +12,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Creating a route
-app.get("/home", (req, res) => {
-  res.send("Welcome to the home page");
-});
-
-app.get("/contact", (req, res) => {
-  res.send("Welcome to the contact page");
-});
+app.use("/api", require("./router/user"));
 
 app.listen(port, (req, res) => {
   console.log(`Server is running on port ${port}`);
