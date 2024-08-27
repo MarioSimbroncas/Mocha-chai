@@ -5,8 +5,8 @@ require("dotenv").config();
 async function connectDB() {
   try {
     await mongoose.connect(process.env.localdb, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+    //   useNewUrlParser: true, TODO: DeprecationWarning: current URL string parser is deprecated
+    //   useUnifiedTopology: true, TODO: DeprecationWarning: current Server Discovery and Monitoring engine is deprecated
     });
     console.log("Connected to database");
   } catch (err) {
