@@ -6,6 +6,9 @@ const port = process.env.PORT || 5000;
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+// Importing the database connection
+require("./model/db");
+
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
