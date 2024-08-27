@@ -93,3 +93,30 @@ exports.getSingleUser = async (req, res) => {
       .json({ message: err.message, error: "Something went wrong" });
   }
 };
+
+// Creating a function to delete a user
+exports.deleteUser = async (req, res) => {
+  try {
+    // Get the user ID from the request parameters
+    const { userid } = req.params;
+    // Validate the user ID
+    if (!userid) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+    const userQuery = { _id: userid };
+    // Find the user by ID
+    const user = await User.findOne(userQuery);
+    // If the user is not found, send an error response
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Delete the user
+    await User.deleteOne(userQuery);
+    // Send the response
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (err) {
+    res
+      .status(400)
+      .json({ message: err.message, error: "Something went wrong" });
+  }
+};
