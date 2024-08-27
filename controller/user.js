@@ -19,6 +19,7 @@ exports.createUser = async (req, res) => {
         error: `Required fields are: ${missingFields.join(", ")}`,
       });
     }
+    // Validate the email
     if (email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
@@ -118,5 +119,63 @@ exports.deleteUser = async (req, res) => {
     res
       .status(400)
       .json({ message: err.message, error: "Something went wrong" });
+  }
+};
+
+// Creating a function to update a user
+exports.updateUser = async (req, res) => {
+  try {
+    // Get the user ID from the request parameters
+    const { userid } = req.params;
+    // Validate the user ID
+    if (!userid) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+    const userQuery = { _id: userid };
+    // Find the user by ID
+    const user = await User.findOne(userQuery);
+    // If the user is not found, send an error response
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Get the data from the request body
+    const { first_name, middle_name, last_name, email, phone, password } =
+      req.body;
+    // Validate parameters
+    if (email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({
+          message: "Invalid email",
+          error: "Email format is incorrect",
+        });
+      }
+      const existingUser = await User.findOne({ email });
+      if (existingUser && existingUser._id.toString() !== userid) {
+        return res.status(400).json({
+          message: "Email already exists",
+          error: "A user with this email already exists",
+        });
+      }
+    }
+    // Values to be updated in the database
+    const data = {
+      first_name,
+      middle_name,
+      last_name,
+      email,
+      phone,
+      password,
+    };
+    // Update the user
+    await User.updateOne(userQuery, data);
+    // Find the updated user
+    const updateUser = await User.findOne(userQuery);
+    // Send the response
+    res.status(200).json({ message: "User updated successfully", updateUser });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ message: error.message, error: "Something went wrong" });
   }
 };

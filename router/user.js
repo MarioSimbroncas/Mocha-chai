@@ -4,6 +4,7 @@ const {
   getUsers,
   getSingleUser,
   deleteUser,
+  updateUser,
 } = require("../controller/user");
 
 // Creating a route to create a user
@@ -14,5 +15,7 @@ router.get("/users", getUsers);
 router.get("/singleuser/:userid", getSingleUser);
 // Creating a route to delete a user
 router.delete("/deleteuser/:userid", deleteUser);
+// Creating a route to update a user
+router.put("/updateuser/:userid", updateUser);
 
 module.exports = router;
