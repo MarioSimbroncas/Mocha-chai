@@ -55,3 +55,14 @@ exports.createUser = async (req, res) => {
       .json({ message: err.message, error: "Something went wrong" });
   }
 };
+
+exports.getUsers = async (req, res) => {
+  try {
+    const users = await User.find().sort({ create_time: "descending" });
+    res.status(200).json({ message: "Users fetched successfully", users });
+  } catch (err) {
+    res
+      .status(400)
+      .json({ message: err.message, error: "Something went wrong" });
+  }
+};
